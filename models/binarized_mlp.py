@@ -127,8 +127,9 @@ if __name__ == "__main__":
     model = Binarized_MLP(device=device, mode="Stochastic")
     model.to(device)
     model.summary()
-    
-    trainer = Trainer(checkpoint_callback=checkpoint_callback,
+   
+    trainer = Trainer(gpus=gpus,
+                      checkpoint_callback=checkpoint_callback,
                       max_nb_epochs=5, train_percent_check=0.1)
     trainer.fit(model)
     trainer.test(model)

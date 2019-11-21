@@ -28,18 +28,20 @@ class BinarizedLinear(torch.nn.Linear):
                 raise RuntimeError("{} is does not exist or not supported".format(mode))
         bin_weight.requires_grad = True
         bin_weight.register_hook(self.cp_bin_grad_to_real_grad_hook)
-        return bin_weight
+        return bin_weight.to(self.device)
 
     def deterministic(self, weight: torch.tensor) -> torch.tensor:
         with torch.no_grad():
+            weight = weight.to('cpu')
             bin_weight = weight.sign()
             bin_weight[bin_weight == 0] = 1
         return bin_weight
 
     def stochastic(self, weight: torch.tensor) -> torch.tensor:
         with torch.no_grad():
+            weight = weight.to('cpu')
             p = torch.sigmoid(weight)
-            uniform_matrix = torch.empty(p.shape).uniform_(0, 1).to(self.device)
+            uniform_matrix = torch.empty(p.shape).uniform_(0, 1)
             bin_weight = (p >= uniform_matrix).type(torch.float32)
             bin_weight[bin_weight == 0] = -1
             bin_weight
