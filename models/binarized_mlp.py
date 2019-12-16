@@ -105,5 +105,6 @@ class Binarized_MLP(nn.Module):
 
 
 if __name__ == "__main__":
+
     model = Binarized_MLP()
     model.weight_clipping()
