@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 import torch
 import torch.nn as nn
@@ -5,6 +6,13 @@ import torch.optim as optim
 
 from torchsummary import summary
 from layers.binarized_linear_layer import BinarizedLinear
+=======
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchsummary import summary
+from layers.binarized_linear import BinarizedLinear
+>>>>>>> bfde0aa1aff9e990c2606cafdb25ebbdf40aa0df
 
 
 class Binarized_MLP(nn.Module):
@@ -29,7 +37,9 @@ class Binarized_MLP(nn.Module):
         self.batch3 = nn.BatchNorm1d(1024)
         self.fc4 = BinarizedLinear(1024, 10, bias=False, mode=mode)
 
+        # Activation
         self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
 
         # Dropout
         self.is_dropout = is_dropout
@@ -44,6 +54,22 @@ class Binarized_MLP(nn.Module):
                                momentum=momentum,
                                weight_decay=weight_decay)
 
+<<<<<<< HEAD
+        # Dropout
+        self.is_dropout = is_dropout
+        if self.is_dropout:
+            self.dropout1 = nn.Dropout(dropout_prob)
+            self.dropout2 = nn.Dropout(dropout_prob)
+            self.dropout3 = nn.Dropout(dropout_prob)
+
+        # Optimizer
+        self.optim = optimizer(self.parameters(),
+                               lr=learning_rate,
+                               momentum=momentum,
+                               weight_decay=weight_decay)
+
+=======
+>>>>>>> bfde0aa1aff9e990c2606cafdb25ebbdf40aa0df
         # Optimizer Scheduler
         if scheduler:
             self.scheduler = scheduler(self.optim, scheduler_gamma)
@@ -72,6 +98,7 @@ class Binarized_MLP(nn.Module):
             x = self.dropout3(x)
 
         x = self.fc4(x)
+        x = self.sigmoid(x)
 
         return x
 
@@ -101,3 +128,12 @@ class Binarized_MLP(nn.Module):
         tp: int = pred.eq(target.data.view_as(pred)).sum()
 
         return tp
+<<<<<<< HEAD
+=======
+
+
+if __name__ == "__main__":
+
+    model = Binarized_MLP()
+    model.weight_clipping()
+>>>>>>> bfde0aa1aff9e990c2606cafdb25ebbdf40aa0df
